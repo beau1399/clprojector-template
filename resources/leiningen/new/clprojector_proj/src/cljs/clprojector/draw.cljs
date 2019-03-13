@@ -121,16 +121,18 @@
            (concat (conj (concat (first elem)(second elem)) ctx)
                    (list r g b a)))))
 
-
 (defn poly [ctx r g b a points]
   (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
+  (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
   (.beginPath ctx)
   (.moveTo ctx (:x (apply project (first points)))(:y (apply project (first points))))
   (loop [p (drop 1 points)]
    (.lineTo ctx (:x (apply project (first p)))(:y (apply project (first p))))
    (if (> (count p) 1)(recur (drop 1 p))))
   (.closePath ctx)
-  (.fill ctx))
+  (.fill ctx)
+  (.stroke ctx)
+)
 
 (defn write-text [ctx x y r g b a size text font]
   (set! (.-fillStyle ctx)
