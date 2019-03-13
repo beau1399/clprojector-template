@@ -19,7 +19,6 @@
              ["src/cljs/{{sanitized}}/draw.cljs" (render "src/cljs/clprojector/draw.cljs" data)]
              ["src/cljs/{{sanitized}}/internal.cljs" (render "src/cljs/clprojector/internal.cljs" data)]
              ["resources/public/css/site.css" (render "resources/public/css/site.css" data)]
-             ["resources/public/css/site.min.css" (render "resources/public/css/site.min.css" data)]
              ["env/dev/clj/{{sanitized}}/middleware.clj" (render "env/dev/clj/clprojector/middleware.clj" data)]
              ["env/dev/clj/{{sanitized}}/repl.clj" (render "env/dev/clj/clprojector/repl.clj" data)]
              ["env/dev/clj/user.clj" (render "env/dev/clj/user.clj" data)]

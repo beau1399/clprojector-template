@@ -29,13 +29,10 @@
                        {:status  200
                         :headers {"Content-Type" "text/html"}
                         :body
-                        (html5 [:head (include-js "/js/app.js")]
+                        (html5 [:head (head) (include-js "/js/app.js")]
                                [:body {:style "margin:0" }
                                 [:img {:src "http://13.85.17.138/cljs-white.png" :style "display:none;" :id "img1"}] 
-                                [:div {:style "width:100vw; height:100vh; margin:0;padding:0; position:fixed; bottom:0; right:0" }
-                                 [:canvas
-                                  {:style "width:100%; height:100%; padding: 0"
-                                   :width clu/virtual-width :height clu/virtual-height}]]
+                                [:div {:style "width:100vw; height:100vh; margin:0;padding:0; position:fixed; bottom:0; right:0" }]
                                 [:script  "{{name}}.core.scene()"]])})}}]]
     {:data {:middleware (concat [[wrap-session {:store store}]] middleware) }})
     (reitit-ring/routes
