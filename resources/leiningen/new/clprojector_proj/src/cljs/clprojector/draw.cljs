@@ -121,18 +121,20 @@
            (concat (conj (concat (first elem)(second elem)) ctx)
                    (list r g b a)))))
 
+;;;Auto-clips Z dimension; other functions don't, at least not at this point
 (defn poly [ctx r g b a points]
-  (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
-  (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
-  (.beginPath ctx)
-  (.moveTo ctx (:x (apply project (first points)))(:y (apply project (first points))))
-  (loop [p (drop 1 points)]
-   (.lineTo ctx (:x (apply project (first p)))(:y (apply project (first p))))
-   (if (> (count p) 1)(recur (drop 1 p))))
-  (.closePath ctx)
-  (.fill ctx)
-  (.stroke ctx)
-)
+  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)  ) points)) ;Clip Z dimension
+    (do
+      (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
+      (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
+      (.beginPath ctx)
+      (.moveTo ctx (:x (apply project (first points)))(:y (apply project (first points))))
+      (loop [p (drop 1 points)]
+        (.lineTo ctx (:x (apply project (first p)))(:y (apply project (first p))))
+        (if (> (count p) 1)(recur (drop 1 p))))
+      (.closePath ctx)
+      (.fill ctx)
+      (.stroke ctx))))
 
 (defn write-text [ctx x y r g b a size text font]
   (set! (.-fillStyle ctx)
