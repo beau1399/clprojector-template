@@ -2,9 +2,12 @@
     (:require
      [{{name}}.util :as clu]))
 
-(def dist clu/camera-distance) 
-(def half-width (/ clu/virtual-width 2))
-(def half-height (/ clu/virtual-height 2))
+(def camera-distance 2)
+(def dist camera-distance)
+(def view-height (or (.-clientHeight (.-documentElement js/document)) (.-innerHeight js/window)))
+(def view-width (or (.-clientWidth (.-documentElement js/document)) (.-innerWidth js/window)))
+(def half-width (/ view-width 2))
+(def half-height (/ view-height 2))
 
 (defn project
   ([x y z]

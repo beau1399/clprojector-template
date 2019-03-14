@@ -7,8 +7,8 @@
 (defn make-canvas []
   (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
                  (js/document.createElement "canvas"))
-  (set! (.-width (get-canvas)) clu/virtual-width)
-  (set! (.-height (get-canvas)) clu/virtual-height)
+  (set! (.-width (get-canvas)) int/view-width)
+  (set! (.-height (get-canvas)) int/view-height)
   (get-canvas)  
 )
 
@@ -28,7 +28,7 @@
 
 (defn cls [ctx r g b]
   (set! (.-fillStyle ctx)   (str "rgba(" r "," g "," b ",1)"))
-  (.fillRect ctx 0 0 clu/virtual-width clu/virtual-height))
+  (.fillRect ctx 0 0 int/view-width int/view-height))
 
 (defn rotate-about-axis
   [px py pz rx ry rz theta]
@@ -107,9 +107,9 @@
   (set! (.-fillStyle ctx)
         (str "rgba(" r "," g "," b "," a ")"))
   (set! (.-font ctx) (str size "px " font))
-  (.fillText ctx text  (* clu/virtual-width x) (* clu/virtual-height y))
+  (.fillText ctx text  (* int/view-width x) (* int/view-height y))
 )
 
 (defn draw-image [ctx x y id]
-  (let [img (.getElementById js/document id) tx (* clu/virtual-width x) ty (* clu/virtual-height y)]
+  (let [img (.getElementById js/document id) tx (* int/view-width x) ty (* int/view-height y)]
    (.drawImage ctx img tx ty)))
