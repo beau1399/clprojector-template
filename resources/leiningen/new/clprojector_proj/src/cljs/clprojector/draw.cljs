@@ -20,9 +20,10 @@
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
+   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)) ll)) ;Clip Z dimension
     (apply int/facet           
            (concat (conj (list (take 3 ll)) ctx)
-                   (list r g b a)))
+                   (list r g b a))))
   (if (> (count ll) 3) (recur (drop 3 ll)))))
 
 (defn cls [ctx r g b]
@@ -74,19 +75,20 @@
     (if (= (count fragment) 0) (rest product)
         (recur (rest collect) pr)))))
 
+;;;Pass-through w/ clipping in Z since this file's funcs. has that
+(defn line [ctx x1 y1 z1 x2 y2 z2 r g b a ]
+  (if (and (> z1 -2)(> z2 -2))
+     (int/line ctx x1 y1 z1 x2 y2 z2 r g b a)))
 
-;;;Pass-through w/ Z-clipping since funcs. in this file have that
-(defn line [ctx x1 y1 z1 x2 y2 z2 r g b a]
- (if (and (> z1 -2)(> z2 -2))
-  (int/line ctx x1 y1 z1 x2 y2 z2 r g b a )))
-  
-(defn line-list [ctx r g b a l]
-  (doseq [ elem (make-pairs l)]
-    (apply int/line           
+;;;Auto-clips Z dimension
+(defn line-list [ctx r g b a points]
+  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)) points)) ;Clip Z dimension
+   (doseq [ elem (make-pairs points)]
+    (apply int/line
            (concat (conj (concat (first elem)(second elem)) ctx)
-                   (list r g b a)))))
+                   (list r g b a))))))
 
-;;;Auto-clips Z dimension; other functions don't, at least not at this point
+;;;Auto-clips Z dimension
 (defn poly [ctx r g b a points]
   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)  ) points)) ;Clip Z dimension
     (do
