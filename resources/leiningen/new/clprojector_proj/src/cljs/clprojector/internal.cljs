@@ -4,15 +4,17 @@
 
 (def camera-distance 2)
 (def dist camera-distance)
-(def view-height (or (.-clientHeight (.-documentElement js/document)) (.-innerHeight js/window)))
-(def view-width (or (.-clientWidth (.-documentElement js/document)) (.-innerWidth js/window)))
-(def half-width (/ view-width 2))
-(def half-height (/ view-height 2))
+
+(def view-height (atom (or (.-clientHeight (.-documentElement js/document)) (.-innerHeight js/window))))
+(def view-width (atom (or (.-clientWidth (.-documentElement js/document)) (.-innerWidth js/window))))
+
+(defn half-width [] (/ @view-width 2))
+(defn half-height [] (/ @view-height 2))
 
 (defn project
   ([x y z]
-   {:x (+ half-width (*  half-height (/ (* x dist) (+ dist z))))
-    :y (+ half-height (* half-height (/ (* y dist) (+ dist z))))})
+   {:x (+ (half-width) (*  (half-height) (/ (* x dist) (+ dist z))))
+    :y (+ (half-height) (* (half-height) (/ (* y dist) (+ dist z))))})
   ([{ :keys [x y z]}]
    (project x y z)))
 

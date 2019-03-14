@@ -7,8 +7,8 @@
 (defn make-canvas []
   (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
                  (js/document.createElement "canvas"))
-  (set! (.-width (get-canvas)) int/view-width)
-  (set! (.-height (get-canvas)) int/view-height)
+  (set! (.-width (get-canvas)) @int/view-width)
+  (set! (.-height (get-canvas)) @int/view-height)
   (get-canvas)  
 )
 
@@ -20,7 +20,7 @@
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
-   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)) ll)) ;Clip Z dimension
+   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) ll)) ;Clip Z dimension
     (apply int/facet           
            (concat (conj (list (take 3 ll)) ctx)
                    (list r g b a))))
@@ -28,7 +28,7 @@
 
 (defn cls [ctx r g b]
   (set! (.-fillStyle ctx)   (str "rgba(" r "," g "," b ",1)"))
-  (.fillRect ctx 0 0 int/view-width int/view-height))
+  (.fillRect ctx 0 0 @int/view-width @int/view-height))
 
 (defn rotate-about-axis
   [px py pz rx ry rz theta]
@@ -77,12 +77,12 @@
 
 ;;;Pass-through w/ clipping in Z since this file's funcs. has that
 (defn line [ctx x1 y1 z1 x2 y2 z2 r g b a ]
-  (if (and (> z1 -2)(> z2 -2))
+  (if (and (> z1 (- 0 int/camera-distance))(> z2 (- 0 int/camera-distance)))
      (int/line ctx x1 y1 z1 x2 y2 z2 r g b a)))
 
 ;;;Auto-clips Z dimension
 (defn line-list [ctx r g b a points]
-  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)) points)) ;Clip Z dimension
+  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) points)) ;Clip Z dimension
    (doseq [ elem (make-pairs points)]
     (apply int/line
            (concat (conj (concat (first elem)(second elem)) ctx)
@@ -90,7 +90,7 @@
 
 ;;;Auto-clips Z dimension
 (defn poly [ctx r g b a points]
-  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)  ) points)) ;Clip Z dimension
+  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))  ) points)) ;Clip Z dimension
     (do
       (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
       (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
@@ -107,9 +107,13 @@
   (set! (.-fillStyle ctx)
         (str "rgba(" r "," g "," b "," a ")"))
   (set! (.-font ctx) (str size "px " font))
-  (.fillText ctx text  (* int/view-width x) (* int/view-height y))
+  (.fillText ctx text  (* @int/view-width x) (* @int/view-height y))
 )
 
 (defn draw-image [ctx x y id]
-  (let [img (.getElementById js/document id) tx (* int/view-width x) ty (* int/view-height y)]
+  (let [img (.getElementById js/document id) tx (* @int/view-width x) ty (* @int/view-height y)]
    (.drawImage ctx img tx ty)))
+
+(defn stretch-view []
+  (reset! int/view-width 1024)
+  (reset! int/view-height 1024))
