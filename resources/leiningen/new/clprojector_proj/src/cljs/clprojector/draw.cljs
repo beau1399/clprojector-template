@@ -55,9 +55,10 @@
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
+   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) -2)) ll)) ;Clip Z dimension
     (apply facet           
            (concat (conj (list (take 3 ll)) ctx)
-                   (list r g b a)))
+                   (list r g b a))))
   (if (> (count ll) 3) (recur (drop 3 ll)))))
 
 (defn cls [ctx r g b]
