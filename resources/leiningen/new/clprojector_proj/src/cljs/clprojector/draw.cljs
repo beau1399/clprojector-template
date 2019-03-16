@@ -1,7 +1,6 @@
 (ns {{name}}.draw (:require
                       [{{name}}.util :as clu]
                       [{{name}}.internal :as int]))
-
 (declare get-canvas)
 
 (defn make-canvas []
@@ -9,8 +8,7 @@
                  (js/document.createElement "canvas"))
   (set! (.-width (get-canvas)) @int/view-width)
   (set! (.-height (get-canvas)) @int/view-height)
-  (get-canvas)  
-)
+  (get-canvas))
 
 (defn get-canvas []
   (let [exists  (first (array-seq (.getElementsByTagName js/document "canvas")))]
@@ -18,9 +16,17 @@
 
 (defn get-context [canvas] (.getContext canvas "2d" ))
 
+(defn clip-list [points] 
+  ;; Clip Z dimension
+  (and
+   ;; No part of the figure is behind the camera; that isn't handled well
+   (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) points))
+   ;; Some part of figure is visible
+   (not (reduce #(and %1 %2) (map #(< (nth % 2) -1) points)))))
+
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
-   (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) ll)) ;Clip Z dimension
+    (if (clip-list ll)
     (apply int/facet           
            (concat (conj (list (take 3 ll)) ctx)
                    (list r g b a))))
@@ -77,12 +83,11 @@
 
 ;;;Pass-through w/ clipping in Z since this file's funcs. has that
 (defn line [ctx x1 y1 z1 x2 y2 z2 r g b a ]
-  (if (and (> z1 (- 0 int/camera-distance))(> z2 (- 0 int/camera-distance)))
+  (if (clip-list (list (list x1 y1 z1) (list x2 y2 z2)))
      (int/line ctx x1 y1 z1 x2 y2 z2 r g b a)))
 
-;;;Auto-clips Z dimension
 (defn line-list [ctx r g b a points]
-  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) points)) ;Clip Z dimension
+  (if (clip-list points)
    (doseq [ elem (make-pairs points)]
     (apply int/line
            (concat (conj (concat (first elem)(second elem)) ctx)
@@ -90,7 +95,7 @@
 
 ;;;Auto-clips Z dimension
 (defn poly [ctx r g b a points]
-  (if (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))  ) points)) ;Clip Z dimension
+  (if (clip-list points)
     (do
       (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
       (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
@@ -107,8 +112,7 @@
   (set! (.-fillStyle ctx)
         (str "rgba(" r "," g "," b "," a ")"))
   (set! (.-font ctx) (str size "px " font))
-  (.fillText ctx text  (* @int/view-width x) (* @int/view-height y))
-)
+  (.fillText ctx text  (* @int/view-width x) (* @int/view-height y)))
 
 (defn draw-image [ctx x y id]
   (let [img (.getElementById js/document id) tx (* @int/view-width x) ty (* @int/view-height y)]
