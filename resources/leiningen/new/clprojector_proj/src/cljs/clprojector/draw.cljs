@@ -1,6 +1,7 @@
 (ns {{name}}.draw (:require
                       [{{name}}.util :as clu]
                       [{{name}}.internal :as int]))
+
 (declare get-canvas)
 
 (defn make-canvas []
@@ -8,7 +9,8 @@
                  (js/document.createElement "canvas"))
   (set! (.-width (get-canvas)) @int/view-width)
   (set! (.-height (get-canvas)) @int/view-height)
-  (get-canvas))
+  (get-canvas)  
+)
 
 (defn get-canvas []
   (let [exists  (first (array-seq (.getElementsByTagName js/document "canvas")))]
@@ -16,13 +18,9 @@
 
 (defn get-context [canvas] (.getContext canvas "2d" ))
 
-(defn clip-list [points] 
-  ;; Clip Z dimension
-  (and
-   ;; No part of the figure is behind the camera; that isn't handled well
-   (reduce #(and %1 %2) (map (fn [p] (>= (nth p 2) (- 0 int/camera-distance))) points))
+(defn clip-list [points]   ; Clip Z dimension
    ;; Some part of figure is visible
-   (not (reduce #(and %1 %2) (map #(< (nth % 2) -1) points)))))
+   (not (reduce #(and %1 %2) (map #(< (nth % 2) -1) points))))
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
@@ -112,7 +110,8 @@
   (set! (.-fillStyle ctx)
         (str "rgba(" r "," g "," b "," a ")"))
   (set! (.-font ctx) (str size "px " font))
-  (.fillText ctx text  (* @int/view-width x) (* @int/view-height y)))
+  (.fillText ctx text  (* @int/view-width x) (* @int/view-height y))
+)
 
 (defn draw-image [ctx x y id]
   (let [img (.getElementById js/document id) tx (* @int/view-width x) ty (* @int/view-height y)]
