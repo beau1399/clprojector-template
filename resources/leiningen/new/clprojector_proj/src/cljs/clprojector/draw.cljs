@@ -20,7 +20,7 @@
 
 (defn clip-list [points]   ; Clip Z dimension
    ;; Some part of figure is visible
-   (not (reduce #(and %1 %2) (map #(< (nth % 2) -1) points))))
+   (not (reduce #(and %1 %2) (map #(< (nth % 2) (- 0 int/camera-distance)) points))))
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
