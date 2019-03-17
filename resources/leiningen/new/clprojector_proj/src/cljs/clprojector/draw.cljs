@@ -4,6 +4,8 @@
 
 (declare get-canvas)
 
+(def clip-at-z (atom (- 0 int/camera-distance)))
+
 (defn make-canvas []
   (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
                  (js/document.createElement "canvas"))
@@ -20,7 +22,7 @@
 
 (defn clip-list [points]   ; Clip Z dimension
    ;; Some part of figure is visible
-   (not (reduce #(and %1 %2) (map #(< (nth % 2) (- 0 int/camera-distance)) points))))
+   (not (reduce #(and %1 %2) (map #(< (nth % 2) @clip-at-z) points))))
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
