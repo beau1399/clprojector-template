@@ -4,7 +4,7 @@
 
 (declare get-canvas)
 
-(def clip-at-z (atom (- 0 int/camera-distance)))
+(def clip-at-z (atom 0))
 
 (defn make-canvas []
   (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
