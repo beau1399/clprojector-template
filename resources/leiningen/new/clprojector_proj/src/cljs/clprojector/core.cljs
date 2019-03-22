@@ -10,10 +10,11 @@
     (js/setInterval     
      (fn []
        (cld/cls ctx 0 0 0)
+       (cld/line ctx -0.9 -0.9 0 0.9 0.9 0 0 255 0 1)
 ;;;Background lines
        (dorun (map #(cld/line ctx
-                              (- (* % 0.25) 2.5) -1 2
-                              (- (* % 0.25) 2.5) 1 2
+                              (- (* % 0.25) 2.5) -1 1
+                              (- (* % 0.25) 2.5) 1 1
                               255 0 0 1)(range 20)))
 ;;;Orbiting cube
        (cld/line-list
