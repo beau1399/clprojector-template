@@ -16,8 +16,8 @@
    (let [zprime (- pz dist)]
     (loop [x px y py z zprime]  
      (if (> z (- 0 dist)) ;Don't return something behind the camera...
-      {:x (+ (half-width) (*  (half-height) (/ (* x dist) (+ dist z))))
-       :y (+ (half-height) (* (half-height) (/ (* y dist) (+ dist z))))}
+      {:x (+ (half-width) (*  (half-height) (/  x (+ dist z))))
+       :y (+ (half-height) (* (half-height) (/  y (+ dist z))))}
       (recur (* 0.9 x)(* 0.9 y)(* 0.9 z)) ;...retract to camera plane instead
    ))))
   ([{ :keys [x y z]}]
