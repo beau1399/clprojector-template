@@ -19,3 +19,5 @@ $ cd projtest
 $ lein figwheel
 
 Browse to http://localhost:3449/ to view the demo in action
+
+STRETCH-VIEW - don't call it in animation loop, call it once.
