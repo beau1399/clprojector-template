@@ -34,7 +34,7 @@ $ lein figwheel
 
 Now you can browse to http://localhost:3449/ to view the demo in action:
 
-[CLPROJECTOR demo](https://raw.githubusercontent.com/beau1399/clprojector-template/master/clprojector.png)
+![CLPROJECTOR demo](https://raw.githubusercontent.com/beau1399/clprojector-template/master/clprojector.png)
 
 
 
