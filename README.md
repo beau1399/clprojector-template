@@ -6,7 +6,7 @@ The Web infrastructure used to serve up the app and build / load all of its Cloj
 
 ## Rationale
 
-The code provided here is built around the HTML5 *canvas* control. This is in some way behind the state-of-the-art, in that most browsers now support WebGL. However, I came into this project with a lot of preexisting *canvas*-driven code and I wanted to generalize it into a library and template so that I could continue to use it for those problems where the performance of *canvas* is adequate. To write a library like this from the ground up using WebGL would have been a lengthier effort.
+The code provided here is built around the HTML5 **canvas** control. This is in some way behind the state-of-the-art, in that most browsers now support WebGL. However, I came into this project with a lot of preexisting **canvas**-driven code and I wanted to generalize it into a library and template so that I could continue to use it for those problems where the performance of **canvas** is adequate. To write a library like this from the ground up using WebGL would have been a lengthier effort.
 
 ## Usage
 
@@ -38,11 +38,21 @@ Now you can browse to http://localhost:3449/ to view the demo in action:
 
 ## The Demo
 
-1. *src/cljs/clprojector/core.cljs* 
-2. *src/clj/clprojector/handler.clj*
-3. *src/cljs/clprojector/draw.cljs*
-4. *src/cljs/clprojector/internal.cljs*
-5. *src/cljc/clprojector/util.cljc*
+The demo renders several different visual features
+
+1. A background of vertical red lines
+2. A static ClojureScript logo near the bottom right corner of the display
+3. A bicolor, semi-transparent cube rotating about its own "Y" axis that moves away from the viewer along the "Z" axis.
+4. A wireframe cube that orbits around an axis at X=0, Z=2
+5. Static text near the top left corner of the display reading "CLProjector Demo"
+
+The most important
+
+1. **src/cljs/clprojector/core.cljs**
+2. **src/clj/clprojector/handler.clj**
+3. **src/cljs/clprojector/draw.cljs**
+4. **src/cljs/clprojector/internal.cljs**
+5. **src/cljc/clprojector/util.cljc**
 
 
 
