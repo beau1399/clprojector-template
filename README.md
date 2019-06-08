@@ -38,6 +38,14 @@ Now you can browse to http://localhost:3449/ to view the demo in action:
 
 ## The Demo
 
+1. *src/cljs/clprojector/core.cljs* 
+2. *src/clj/clprojector/handler.clj*
+3. *src/cljs/clprojector/draw.cljs*
+4. *src/cljs/clprojector/internal.cljs*
+5. *src/cljc/clprojector/util.cljc*
+
+
+
 STRETCH-VIEW - don't call it in animation loop, call it once.
 
 ## Programming Interface
