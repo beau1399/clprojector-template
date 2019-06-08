@@ -36,7 +36,7 @@ Now you can browse to http://localhost:3449/ to view the demo in action:
 
 ![CLPROJECTOR demo](https://raw.githubusercontent.com/beau1399/clprojector-template/master/clprojector.png)
 
-
+## The Demo
 
 STRETCH-VIEW - don't call it in animation loop, call it once.
 
