@@ -46,6 +46,17 @@ The demo renders several different visual features
 4. A wireframe cube that orbits around an axis at X=0, Z=2
 5. Static text near the top left corner of the display reading "CLProjector Demo"
 
+The code responsible for rendering these feature resides under the project root at **src/cljs/clprojector/core.cljs**. At the top of this file, some necessary code is referenced:
+
+``` 
+(ns clprojtst.core
+  (:require
+   [clprojtst.draw :as cld]
+   [reitit.frontend :as reitit]))
+```
+
+
+
 The most important
 
 1. **src/cljs/clprojector/core.cljs**
