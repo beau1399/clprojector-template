@@ -12,25 +12,25 @@ The code provided here is built around the HTML5 **canvas** control. This is in 
 
 This section shows how to download the CLPROJECTOR template, install it, use it to generate a runable 3D Web application, and then view the demo that comes out-of-the-box with each such Web app generated. The first step is to clone the repository. This should be done from the root folder under which you keep your various Git-sourced code folders:
 
-$ git clone https://github.com/beau1399/clprojector-template.git
+```$ git clone https://github.com/beau1399/clprojector-template.git```
 
 Then Leiningen must be used to install the template:
 
-$ cd clprojector
+```$ cd clprojector```
 
-$ lein install
+```$ lein install```
 
 Move back out to your top-level code folder and instantiate a CLPROJECTOR application:
 
-$ cd ..
+```$ cd ..```
 
-$ lein new clprojector-proj projtest
+```$ lein new clprojector-proj projtest```
 
 Finally, use Figwheel to run a local Web server:
 
-$ cd projtest
+```$ cd projtest```
 
-$ lein figwheel
+```$ lein figwheel```
 
 Now you can browse to http://localhost:3449/ to view the demo in action:
 
