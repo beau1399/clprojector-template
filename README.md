@@ -10,7 +10,9 @@ The code provided here is built around the HTML5 **canvas** control. Most browse
 
 ## Usage
 
-This section shows how to download the CLPROJECTOR template, install it, use it to generate a runable 3D Web application, and then view the demo provided out-of-the-box. The first step is to clone the repository. This should be done from the root folder under which you keep your various Git-sourced code folders:
+This section shows how to download the CLPROJECTOR template, install it, use it to generate a runable 3D Web application, and then view the demo provided out-of-the-box. 
+
+The first step is to clone the repository. This will typically be done from the root folder under which you keep your various Git-sourced code folders:
 
 `$ git clone https://github.com/beau1399/clprojector-template.git`
 
@@ -32,6 +34,8 @@ Finally, use Figwheel to run a local Web server:
 
 `$ lein figwheel`
 
+(The **projtest** project name is assumed in many of the source code examples shown below. Of course, you can call your project whatever you want.)
+
 Now you can browse to http://localhost:3449/ to view the demo in action:
 
 ![CLPROJECTOR demo](https://raw.githubusercontent.com/beau1399/clprojector-template/master/clprojector.png)
@@ -42,11 +46,11 @@ The demo renders several different visual features
 
 1. A background of vertical red lines
 2. A static ClojureScript logo near the bottom right corner of the display
-3. A two-color, semi-transparent cube rotating about its own "X" and "Y" axes that moves away from the viewer along the "Z" axis.
+3. A two-color, semi-transparent cube spinning about its own "X" and "Y" axes while it moves away from the viewer along the "Z" axis.
 4. A wireframe cube that orbits around an axis at X=0, Z=2
 5. Static text near the top left corner of the display reading "CLProjector Demo"
 
-The code responsible for rendering these feature resides under the project root at **src/cljs/clprojector/core.cljs**. At the top of this file, some necessary code is referenced:
+The code responsible for rendering these feature resides under the project root at **src/cljs/clprojector/core.cljs**. By default, this is the file where your rendering code should go. At the top of this file, some necessary code is referenced:
 
 ``` 
 (ns clprojtst.core
@@ -54,7 +58,7 @@ The code responsible for rendering these feature resides under the project root 
    [clprojtst.draw :as cld]
    [reitit.frontend :as reitit]))
 ```
-It is from the **draw** sub-namespace of the main project namespace, aliased as "cld," that the CLPROJECTOR rendering functions will come.
+It is from the **draw** sub-namespace of the main project namespace, aliased above as "cld," that the CLPROJECTOR rendering functions will come.
 
 The executable portion of **core.cljs** begins thus:
 
@@ -200,7 +204,18 @@ The counterclockwise nature of the coordinate ordering seen above is evident thr
 
 ## Two-Dimensional Features
 
-There are several functions in the CLPROJECTOR programming interface that expect only 2D paramters, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). 
+There are several functions in the CLPROJECTOR programming interface that expect only 2D paramters, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). The text and ClojureScript logo seen in the demo call some of these 2D functions. The code the draws the text is shown below:
+
+`(cld/write-text ctx 0.025 0.05 0 255 0 1 22 "CLProjector Demo" "monospace")`
+
+The parameters to **write-text** are, from the left, the context, "X" and "Y" coordinates where the text starts, RGBA color values, the font size in pixels, the text to be rendered, and a font family name. Note that the font size and family are passed through to the browser, just as if they were present in a .CSS file or **style** attribute.
+
+In the call above, the coordinate value is just inside the top left corner of the central, square portion of the display center. The text is 100% red, and 100% opaque. The font is 22 pixels in size, and uses the "monospace" font family, which is a standard Web font.
+
+### Images and the Handler File
+
+
+
 
 The most important
 
