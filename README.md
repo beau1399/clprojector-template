@@ -89,11 +89,61 @@ Set aside, for now, lines 2 and 3 above, which are only explicable in terms of t
 
 The **map** operation applies an anonymous function to the range, taking each 0...19 value and building it into the "X" and "Y" values that are the first two parameters to **cld/line**, after the initial context parameter. After the "X" and "Y" parameters, red, green, blue, and alpha (ranging from 0.0 to 1.0) values are passed.
 
-Note that **cld/line** is a 2D function. There are several of these in the CLPROJECTOR programming interface, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). The coordinate system is discussed in the next section.
 
-## Coordinate System
+### Coordinate System
 
 ![CLPROJECTOR coordinate system](https://raw.githubusercontent.com/beau1399/clprojector-template/master/frustum.png)
+
+The image above is a three-quarter representation of the CLPROJECTOR viewable universe, rendered using vanishing point perspective. The plane shaded gray represents the square portion of the user's display. The unshaded, coplanar areas to its side account for the non-square nature of most display devices.
+
+Considering the shaded area, we see that coordinate (0,0,0) represents the top left corner of the central, square portion of the display. The extreme top left corner of the entire display will have a negative "X" coordinate whose absolute value is proportional to the aspect ratio of the display. 
+
+The "Z" dimension extends forward, from 0 at the camera to infinity. At Z=100, objects that would occupy the entire display at Z=0 are barely visible; this is denoted in the figure.
+
+Returning to the demo code, these calculations, which yield the start and end coordinates for each of the red background lines, should make more sense:
+
+```
+                              (- (* % 0.25) 2.5) -1 1
+                              (- (* % 0.25) 2.5) 1 1
+```
+The first value on each line, the "X" parameter, is identical, since the lines are vertical. When % is 0, these evaluate to 2.5 (i.e. 2.5 times the display height), which will be past the extreme right of just about any contemporary display. At the other extreme, when % is 19, the "X" parameter will be -2.25, which is well left of the display edge. 
+
+### The Wireframe Cube
+
+Continuing with the demo code, the next operation is the rendering of the wireframe cube:
+
+```
+;;;Orbiting cube
+       (cld/line-list
+        ctx 255 0 255 1
+        (map
+         #(cld/translate % 0 0 2)        
+         (map
+          #(cld/rotate-about-y % @angle)
+          (map
+           #(cld/translate % 1 0 0)
+           (list
+            '(-0.25 -0.25 -0.25)
+            '(0.25 -0.25 -0.25)
+            '(0.25 -0.25 0.25)
+            '(-0.25 -0.25 0.25)
+            '(-0.25 -0.25 -0.25)
+            '(-0.25 0.25 -0.25)
+            '(0.25 0.25 -0.25)
+            '(0.25 0.25 0.25)
+            '(-0.25 0.25 0.25)
+            '(-0.25 0.25 -0.25)
+            '(-0.25 0.25 0.25)
+            '(-0.25 -0.25 0.25)
+            '(0.25 -0.25 0.25)
+            '(0.25 0.25 0.25)
+            '(0.25 0.25 -0.25)
+            '(0.25 -0.25 -0.25))))))
+```
+
+This snippet is best analyzed from the inside out. At its center resides a set of coordinate triplets that define a set of lines forming the cube, whose vertices are each 0.5 units long. This definition centers the cube around (0,0,0); it is first passed to **cld/translate**, which moves it to (1,0,0). Then, **cld/rotate-about-y** rotates the cube (which is now located to the right of the Y axis) about this axis, thus achieving the orbiting effect. Finally, **cld/translate** is called again, to move the whole cube 2 units forward in the "Z" dimension, to give it some distance from the camera and allow for it to be better viewed. 
+
+Because the cube is defined a list of coordinate triplets, and **cld/translate**, etc. operate on one point in 3D space per call, each of these operations is implemented as a **map** operation. Once all of this translation and rotation is complete, the resultant list of coordinate triplets is passed to **cld/line-list**, which also expects RGBA parameters and the context. 
 
 
 The most important
@@ -109,5 +159,8 @@ The most important
 STRETCH-VIEW - don't call it in animation loop, call it once.
 
 ## Programming Interface
+
+There are several functions in the CLPROJECTOR programming interface that expect only 2D paramters, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). The coordinate system is discussed in the next section.
+
 
 ## Internals
