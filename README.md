@@ -85,7 +85,15 @@ Following the code downward, we see the creation of the red background lines (no
                               (- (* % 0.25) 2.5) 1 1
                               255 0 0 1)(range 20))) 
 ```                              
+Set aside, for now, lines 2 and 3 above, which are only explicable in terms of the CLPROJECTOR coordinate system. What we have is a **map** operation being applied to the range 0...19, to create 20 vertical red lines. Most of these lines will not be visible on a given display; the code accomodates super-wide aspect ratios that are not currently prevalent.
 
+The **map** operation applies an anonymous function to the range, taking each 0...19 value and building it into the "X" and "Y" values that are the first two parameters to **cld/line**, after the initial context parameter. After the "X" and "Y" parameters, red, green, blue, and alpha (ranging from 0.0 to 1.0) values are passed.
+
+Note that **cld/line** is a 2D function. There are several of these in the CLPROJECTOR programming interface, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). The coordinate system is discussed in the next section.
+
+## Coordinate System
+
+![CLPROJECTOR coordinate system](https://raw.githubusercontent.com/beau1399/clprojector-template/master/frustum.png)
 
 
 The most important
