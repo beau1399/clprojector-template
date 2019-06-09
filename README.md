@@ -141,7 +141,17 @@ Continuing with the demo code, the next operation is the rendering of the wirefr
             '(0.25 -0.25 -0.25))))))
 ```
 
-This snippet is best analyzed from the inside out. At its center resides a set of coordinate triplets that define a set of lines forming the cube, whose vertices are each 0.5 units long. This definition centers the cube around (0,0,0); it is first passed to **cld/translate**, which moves it to (1,0,0). Then, **cld/rotate-about-y** rotates the cube (which is now located to the right of the Y axis) about this axis, thus achieving the orbiting effect. Finally, **cld/translate** is called again, to move the whole cube 2 units forward in the "Z" dimension, to give it some distance from the camera and allow for it to be better viewed. 
+This snippet is best analyzed from the inside out. At its center resides a set of coordinate triplets that define a set of lines forming the cube, whose vertices are each 0.5 units long. 
+
+This definition centers the cube around (0,0,0). On its own, this coordinate is not a very suitable center for anything, since it represents the top left corner of the display, right at camera depth. Both solids in the demo are first defined around (0,0,0), though, and then subjected to translations to place them more centrally within the viewable area.
+
+The first two coordinate triplets are (-0.25, -0.25, -0.25) and (0.25, -0.25, -0.25). Looking at the "Y" and "Z" values, we can determine that this pair defines the top (Y=-0.25) / front (Z=-0.25) edge of the cube. It is only the "Z" coordinates that vary across this first line, as it sweeps from left to right. 
+
+Moving on, the second coordinate (0.25, -0.25, -0.25) is reused in conjunction with the third to define the second line drawn. This is how the **cld/line-list** function, to which this coordinate list will eventually be passed, operates. This second line connects the front top right vertex of the cube to the back top right, as "Z" varies. 
+
+The next two coordinates complete the top, square facet of the cube. The definition continues in similar fashion until all the necessary lines have been laid out.
+
+Working outward, the cube definition is first passed to **cld/translate**, which moves it to (1,0,0). Then, **cld/rotate-about-y** rotates the cube (which is now located to the right of the Y axis) about this axis, thus achieving the orbiting effect. Finally, **cld/translate** is called again, to move the whole cube 2 units forward in the "Z" dimension, to give it some distance from the camera and allow for it to be better viewed. 
 
 Because the cube is defined a list of coordinate triplets, and **cld/translate**, etc. operate on one point in 3D space per call, each of these operations is implemented as a **map** operation. Once all of this translation and rotation is complete, the resultant list of coordinate triplets is passed to **cld/line-list**, which also expects RGBA parameters and the context. 
 
