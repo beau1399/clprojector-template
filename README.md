@@ -79,7 +79,8 @@ The parameters to **cls** are the context, and red, green, and blue color values
 
 Following the code downward, we see the creation of the red background lines (notice that we are rendering from the back of the scene to front; we do not want the red lines to appear atop the shapes):
 
-```       (dorun (map #(cld/line ctx
+```
+          (dorun (map #(cld/line ctx
                               (- (* % 0.25) 2.5) -1 1
                               (- (* % 0.25) 2.5) 1 1
                               255 0 0 1)(range 20))) 
