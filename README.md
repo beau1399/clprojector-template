@@ -64,13 +64,27 @@ The executable portion of **core.cljs** begins thus:
    (def angle (atom 0))    
     (def place (atom 0))
     (js/setInterval     
-     (fn []
-       (cld/cls ctx 0 0 0)         
+     (fn []       
 ````
 
-The identifier "scene" is expected by the CLPROJECTOR infrastructure. It will be called upon page load and must make a call to JavaScripts **js/setInterval** function to create an animation loop. This is seen near the bottom of the snippet above. Before that happens, calls to **cld/get-context** and **cld/get-canvas** obtain variable **ctx**, an HTML5 **context** object, which is passed to the CLPROJECTOR rendering functions.
+The identifier "scene" is expected by the CLPROJECTOR infrastructure. It will be called upon page load and must make a call to JavaScripts **js/setInterval** function to create an animation loop. The anonymous function created in the second line from the bottom above is the one that will executed repeatedly, once per frame of demo animation. Before that happens, calls to **cld/get-context** and **cld/get-canvas** obtain variable **ctx**, an HTML5 **context** object, which is reused and passed to the CLPROJECTOR rendering functions throughout the runtime of the demo.
 
 Atoms **angle** and **place** will vary over time and define the state of the model. The first of these is a number in radians which is overloaded to hold both 1) the angle by which the two-color cube is rotated about its own "Y" axis and 2) the position of the second, wireframe cube in its orbit.
+
+Next, the code in **core.cljs** proceeds with the body of the rendering function. First, the display is cleared:
+
+```       (cld/cls ctx 0 0 0)      ```
+
+The parameters to **cls** are the context, and red, green, and blue color values, which range from 0 to 255. Here, we are clearing the display to black.
+
+Following the code downward, we see the creation of the red background lines (notice that we are rendering from the back of the scene to front; we do not want the red lines to appear atop the shapes):
+
+```       (dorun (map #(cld/line ctx
+                              (- (* % 0.25) 2.5) -1 1
+                              (- (* % 0.25) 2.5) 1 1
+                              255 0 0 1)(range 20)))```
+
+
 
 The most important
 
