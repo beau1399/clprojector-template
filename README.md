@@ -42,7 +42,7 @@ The demo renders several different visual features
 
 1. A background of vertical red lines
 2. A static ClojureScript logo near the bottom right corner of the display
-3. A two-color, semi-transparent cube rotating about its own "Y" axis that moves away from the viewer along the "Z" axis.
+3. A two-color, semi-transparent cube rotating about its own "X" and "Y" axes that moves away from the viewer along the "Z" axis.
 4. A wireframe cube that orbits around an axis at X=0, Z=2
 5. Static text near the top left corner of the display reading "CLProjector Demo"
 
@@ -151,9 +151,63 @@ Moving on, the second coordinate (0.25, -0.25, -0.25) is reused in conjunction w
 
 The next two coordinates complete the top, square facet of the cube. The definition continues in similar fashion until all the necessary lines have been laid out.
 
-Working outward, the cube definition is first passed to **cld/translate**, which moves it to (1,0,0). Then, **cld/rotate-about-y** rotates the cube (which is now located to the right of the Y axis) about this axis, thus achieving the orbiting effect. Finally, **cld/translate** is called again, to move the whole cube 2 units forward in the "Z" dimension, to give it some distance from the camera and allow for it to be better viewed. 
+Working outward, the cube definition is first passed to **cld/translate**, which moves it to (1,0,0). Then, **cld/rotate-about-y** rotates the cube (which is now located to the right of the Y axis) about this axis by **@angle**, thus achieving the orbiting effect. Finally, **cld/translate** is called again, to move the whole cube 2 units forward in the "Z" dimension, to give it some distance from the camera and allow for it to be better viewed. 
 
 Because the cube is defined a list of coordinate triplets, and **cld/translate**, etc. operate on one point in 3D space per call, each of these operations is implemented as a **map** operation. Once all of this translation and rotation is complete, the resultant list of coordinate triplets is passed to **cld/line-list**, which also expects RGBA parameters and the context. 
+
+## The Solid Cube
+
+The code that renders the solid cube that moves away from the user along the "Z" axis is, in many ways, similar to the code for the wireframe cube. Of course, the translations and rotations for this effect are different from those used to achieve the orbit effect, but they rely on the same functions and techniques.
+
+One difference is that this cube's edges are 1.0 units in size. Using a larger cube is desirable because this cube moves much farther away from the viewer.
+
+More fundamentally, this cube is a solid, not a wireframe. This introduces some issues related to surface rendering. The wireframe model can simply be rendered in its entirety regardless of its rotation. For a solid cube, on the other hand, we must consider rotation. We do not want to render the back surface(s) of the cube. These must be obscured from view.
+
+In CLPROJECTOR applications, this issue is handled in a manner that should be familiar to anyone with experience with a 3D library like OpenGL or Direct3D: the solid is defined as a series of triangular facets, which are specified in counter-clockwise order. If, after translation, rotation, etc., the **cld/facet-list** function encounters a facet which is now present in its parameters in *clockwise* order, this function considers it a back-facing facet and does not render it. These details are abstracted away by CLPROJECTOR; the onus is only on the user of the library to specify the facet coordinates in the proper order.
+
+The solid cube is rendered via two calls to **cld/facet-list**, one for each of its two colors. Consider the first call:
+
+```
+;;;Travelling Cube (most of it)
+       (cld/facet-list
+        ctx  
+        (map
+         #(cld/translate %1 0 0 @place)
+         (map
+          #(cld/rotate-about-y % @angle)
+          (map
+           #(cld/rotate-about-x % @angle)
+           (list
+;;;BACK face
+            '(0.5 -0.5 0.5)
+            '(-0.5 0.5 0.5)
+            '(-0.5 -0.5 0.5)             
+            '(-0.5 0.5 0.5)
+            '(0.5 -0.5 0.5)
+            '(0.5 0.5 0.5)             
+;;;LEFT            
+            '(-0.5 -0.5 -0.5)
+            '(-0.5 -0.5 0.5)
+            '(-0.5 0.5 0.5)             
+            '(-0.5 0.5 0.5)                                 
+            '(-0.5 0.5 -0.5)
+            '(-0.5 -0.5 -0.5)
+;;;FRONT
+            '(0.5 0.5 -0.5)             
+            '(-0.5 -0.5 -0.5)
+            '(-0.5 0.5 -0.5)
+            '(-0.5 -0.5 -0.5)             
+            '(0.5 0.5 -0.5)
+            '(0.5 -0.5 -0.5)
+;;;RIGHT
+            '(0.5 0.5 0.5)
+            '(0.5 -0.5 0.5)
+            '(0.5 -0.5 -0.5)             
+            '(0.5 -0.5 -0.5)
+            '(0.5 0.5 -0.5)
+            '(0.5 0.5 0.5)))))
+        0 0 255 0.6)
+```
 
 
 The most important
