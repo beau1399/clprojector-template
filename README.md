@@ -226,6 +226,14 @@ The static markup of the application's page is constructed by the server, withou
 
 Here we see the designated **id** value, "img1" and the "display:none" attribute, which set this image up for use by the CLOJURESCRIPT rendering engine.
 
+## Programming Interface
+
+STRETCH-VIEW - don't call it in animation loop, call it once.
+
+
+
+## Internals
+
 
 1. **src/cljs/clprojector/core.cljs**
 2. **src/clj/clprojector/handler.clj**
@@ -235,11 +243,3 @@ Here we see the designated **id** value, "img1" and the "display:none" attribute
 
 
 
-STRETCH-VIEW - don't call it in animation loop, call it once.
-
-## Programming Interface
-
-
-
-
-## Internals
