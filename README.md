@@ -1,6 +1,6 @@
 # clprojector-proj
 
-CLPROJECTOR is a Leiningen template for Web projects that use browser scripting to do 3 dimensional rendering. It provides functions to translate, rotate, and project 3D coordinates onto the 2D raster graphics interface offered by the browser. There are also functions to draw lines and polygons from 3D coordinates, and to output text and raster images to the display.
+CLPROJECTOR is a Leiningen template for Web projects that uses browser scripting to do 3 dimensional rendering. It provides functions to translate, rotate, and project 3D coordinates onto the 2D raster graphics interface offered by the browser. There are also functions to draw lines and polygons from 3D coordinates, and to output text and raster images to the display.
 
 The Web infrastructure used to serve up the app and build / load all of its Clojure(Script) code comes from the Porpus template (https://github.com/beau1399/porpus). If you have questions about the Web server used, where styles and whatnot should be stored, how incremental reloading during development works, etc., you are advised to take a look at the Porpus README.md file.
 
