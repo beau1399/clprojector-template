@@ -214,10 +214,18 @@ In the call above, the coordinate value is just inside the top left corner of th
 
 ### Images and the Handler File
 
+The code that renders the ClojureScript logo looks like this:
 
+`(cld/draw-image ctx 0.85 0.825 "img1")`
 
+After the inital, context parameter, we see thee "X" and "Y" coordinates of the top left corner of the image. After that, there is only a string. This string is the **id** attribute of an image which is present in the static markup of the demo page, but not initially displayed. This is how images are handled under CLPROJECTOR.
 
-The most important
+The static markup of the application's page is constructed by the server, without scripting, and is therefore present not in a ClojureScript file, but in a Clojure file: **src/clj/clprojector/handler.clj**. This file consists largely of Reitit format makup; this format is a pretty widespread one in the Clojure ecosystem, e.g. in Reagent applications. CLPROJECTOR does not use Reagent, but the code in **handler.clj** should look familiar to anyone who has used it. The code that marks up image "img1" looks like this:
+
+`[:img {:src "http://13.85.17.138/cljs-white.png" :style "display:none;" :id "img1"}]`
+
+Here we see the designated **id** value, "img1" and the "display:none" attribute, which set this image up for use by the CLOJURESCRIPT rendering engine.
+
 
 1. **src/cljs/clprojector/core.cljs**
 2. **src/clj/clprojector/handler.clj**
