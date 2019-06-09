@@ -165,10 +165,10 @@ More fundamentally, this cube is a solid, not a wireframe. This introduces some 
 
 In CLPROJECTOR applications, this issue is handled in a manner that should be familiar to anyone with experience with a 3D library like OpenGL or Direct3D: the solid is defined as a series of triangular facets, which are specified in counter-clockwise order. If, after translation, rotation, etc., the **cld/facet-list** function encounters a facet which is now present in its parameters in *clockwise* order, this function considers it a back-facing facet and does not render it. These details are abstracted away by CLPROJECTOR; the onus is only on the user of the library to specify the facet coordinates in the proper order.
 
-The solid cube is rendered via two calls to **cld/facet-list**, one for each of its two colors. Consider the first call:
+The solid cube is rendered via two calls to **cld/facet-list**, one for each of its two colors. Consider the second call (which is very similar to the first, but shorter, since fewer faces are rendered in the second color):
 
 ```
-;;;Travelling Cube (most of it)
+;;; Cube (top and bottom)
        (cld/facet-list
         ctx  
         (map
@@ -178,36 +178,25 @@ The solid cube is rendered via two calls to **cld/facet-list**, one for each of 
           (map
            #(cld/rotate-about-x % @angle)
            (list
-;;;BACK face
+;;;TOP
+            '(-0.5 -0.5 -0.5)
             '(0.5 -0.5 0.5)
-            '(-0.5 0.5 0.5)
             '(-0.5 -0.5 0.5)             
-            '(-0.5 0.5 0.5)
-            '(0.5 -0.5 0.5)
-            '(0.5 0.5 0.5)             
-;;;LEFT            
-            '(-0.5 -0.5 -0.5)
-            '(-0.5 -0.5 0.5)
-            '(-0.5 0.5 0.5)             
-            '(-0.5 0.5 0.5)                                 
-            '(-0.5 0.5 -0.5)
-            '(-0.5 -0.5 -0.5)
-;;;FRONT
-            '(0.5 0.5 -0.5)             
-            '(-0.5 -0.5 -0.5)
-            '(-0.5 0.5 -0.5)
-            '(-0.5 -0.5 -0.5)             
-            '(0.5 0.5 -0.5)
-            '(0.5 -0.5 -0.5)
-;;;RIGHT
-            '(0.5 0.5 0.5)
-            '(0.5 -0.5 0.5)
             '(0.5 -0.5 -0.5)             
-            '(0.5 -0.5 -0.5)
+            '(0.5 -0.5 0.5)
+            '(-0.5 -0.5 -0.5)
+;;;BOTTOM                 
             '(0.5 0.5 -0.5)
-            '(0.5 0.5 0.5)))))
-        0 0 255 0.6)
+            '(-0.5 0.5 -0.5)
+            '(0.5 0.5 0.5)             
+            '(-0.5 0.5 0.5)
+            '(0.5 0.5 0.5)
+            '(-0.5 0.5 -0.5)))))  0 255 0 0.6)
 ```
+
+Again, we see an inner coordinate data structure filtered outward through positioning and rotation functions, and then passed to the rendering function. Here, that is **cld/facet-list**. The obvious difference is that instead of rectangles, the code above specifies adjacent triangles that only form rectangles when taken together. Also, unlike **cld/line-list**, **cld/facet-list** does not reuse ending coordinates as starting coordinates; each triangular facet requires three coordinates of its own. 
+
+The counterclockwise nature of the coordinate ordering seen above is evident throughout. The first group of three triplets, for example, begins at the top left front vertex, proceeds to the top back right vertex, and then ends at the top left back vertex. When rotated to the front of the cube, this is clearly a counterclockwise ordering, beginning at around 7 o'clock, moving next to something like 1 o'clock, and then ending around 10 o'clock.
 
 
 The most important
