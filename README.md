@@ -198,6 +198,9 @@ Again, we see an inner coordinate data structure filtered outward through positi
 
 The counterclockwise nature of the coordinate ordering seen above is evident throughout. The first group of three triplets, for example, begins at the top left front vertex, proceeds to the top back right vertex, and then ends at the top left back vertex. When rotated to the front of the cube, this is clearly a counterclockwise ordering, beginning at around 7 o'clock, moving next to something like 1 o'clock, and then ending around 10 o'clock.
 
+## Two-Dimensional Features
+
+There are several functions in the CLPROJECTOR programming interface that expect only 2D paramters, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). 
 
 The most important
 
@@ -213,7 +216,7 @@ STRETCH-VIEW - don't call it in animation loop, call it once.
 
 ## Programming Interface
 
-There are several functions in the CLPROJECTOR programming interface that expect only 2D paramters, and they assume a "Z" value of 0 (as close to the camera as possible without being behind it). The coordinate system is discussed in the next section.
+
 
 
 ## Internals
