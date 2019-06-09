@@ -82,7 +82,8 @@ Following the code downward, we see the creation of the red background lines (no
 ```       (dorun (map #(cld/line ctx
                               (- (* % 0.25) 2.5) -1 1
                               (- (* % 0.25) 2.5) 1 1
-                              255 0 0 1)(range 20)))```
+                              255 0 0 1)(range 20))) 
+```                              
 
 
 
