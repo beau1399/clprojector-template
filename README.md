@@ -42,7 +42,7 @@ The demo renders several different visual features
 
 1. A background of vertical red lines
 2. A static ClojureScript logo near the bottom right corner of the display
-3. A bicolor, semi-transparent cube rotating about its own "Y" axis that moves away from the viewer along the "Z" axis.
+3. A two-color, semi-transparent cube rotating about its own "Y" axis that moves away from the viewer along the "Z" axis.
 4. A wireframe cube that orbits around an axis at X=0, Z=2
 5. Static text near the top left corner of the display reading "CLProjector Demo"
 
@@ -54,8 +54,23 @@ The code responsible for rendering these feature resides under the project root 
    [clprojtst.draw :as cld]
    [reitit.frontend :as reitit]))
 ```
+It is from the **draw** sub-namespace of the main project namespace, aliased as "cld," that the CLPROJECTOR rendering functions will come.
 
+The executable portion of **core.cljs** begins thus:
 
+````
+(defn ^:export scene []
+  (let[ctx (cld/get-context (cld/get-canvas))]
+   (def angle (atom 0))    
+    (def place (atom 0))
+    (js/setInterval     
+     (fn []
+       (cld/cls ctx 0 0 0)         
+````
+
+The identifier "scene" is expected by the CLPROJECTOR infrastructure. It will be called upon page load and must make a call to JavaScripts **js/setInterval** function to create an animation loop. This is seen near the bottom of the snippet above. Before that happens, calls to **cld/get-context** and **cld/get-canvas** obtain variable **ctx**, an HTML5 **context** object, which is passed to the CLPROJECTOR rendering functions.
+
+Atoms **angle** and **place** will vary over time and define the state of the model. The first of these is a number in radians which is overloaded to hold both 1) the angle by which the two-color cube is rotated about its own "Y" axis and 2) the position of the second, wireframe cube in its orbit.
 
 The most important
 
