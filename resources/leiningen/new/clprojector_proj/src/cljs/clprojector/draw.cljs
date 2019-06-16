@@ -4,9 +4,7 @@
 
 (def clip-at-z int/clip-at-z)
 
-(defn get-canvas [] (int/get-canvas))
-
-(defn get-context [canvas] (.getContext canvas "2d" ))
+(defn get-context [] (.getContext (int/get-canvas) "2d" ))
 
 (defn facet-list [ctx l r g b a]
   (loop [ll l]

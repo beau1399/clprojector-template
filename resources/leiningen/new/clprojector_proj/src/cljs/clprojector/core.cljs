@@ -4,7 +4,7 @@
    [reitit.frontend :as reitit]))
 
 (defn ^:export scene []
-  (let[ctx (cld/get-context (cld/get-canvas))]
+  (let[ctx (cld/get-context)]
    (def angle (atom 0))    
     (def place (atom 0))
     (js/setInterval     
