@@ -64,14 +64,14 @@ The executable portion of **core.cljs** begins thus:
 
 ````
 (defn ^:export scene []
-  (let[ctx (cld/get-context (cld/get-canvas))]
+  (let[ctx (cld/get-context)]
    (def angle (atom 0))    
     (def place (atom 0))
     (js/setInterval     
      (fn []       
 ````
 
-The identifier "scene" is expected by the CLPROJECTOR infrastructure. It will be called upon page load and must make a call to JavaScripts **js/setInterval** function to create an animation loop. The anonymous function created in the second line from the bottom above is the one that will executed repeatedly, once per frame of demo animation. Before that happens, calls to **cld/get-context** and **cld/get-canvas** obtain variable **ctx**, an HTML5 **context** object, which is reused and passed to the CLPROJECTOR rendering functions throughout the runtime of the demo.
+The identifier "scene" is expected by the CLPROJECTOR infrastructure. It will be called upon page load and must make a call to JavaScripts **js/setInterval** function to create an animation loop. The anonymous function created in the second line from the bottom above is the one that will executed repeatedly, once per frame of demo animation. Before that happens, a call to **cld/get-context** obtain variable **ctx**, an HTML5 **context** object, which is reused and passed to the CLPROJECTOR rendering functions throughout the runtime of the demo.
 
 Atoms **angle** and **place** will vary over time and define the state of the model. The first of these is a number in radians which is overloaded to hold both 1) the angle by which the two-color cube is rotated about its own "Y" axis and 2) the position of the second, wireframe cube in its orbit.
 
@@ -227,6 +227,44 @@ The static markup of the application's page is constructed by the server, withou
 Here we see the designated **id** value, "img1" and the "display:none" attribute, which set this image up for use by the CLOJURESCRIPT rendering engine.
 
 ## Programming Interface
+
+The functions intended for use by the generated applications reside in file **src/cljs/clprojector/core.cljs**. Many of these have been discussed above. Here is a comprehensive listing of these functions:
+
+### get-context[] ###
+
+Returns the context object necessary for all drawing operations. Internally, this ensures the singleton HTML5 "canvas" used for rendering exists.
+
+### cls [r g b] ###
+
+Paints the entire drawing area with the opaque 24-bit color defined by its parameters.
+
+### rotate-about-x [x y z theta] ###
+
+Takes point (x, y, z) in 3D space, rotates about the "X" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (1,0,0) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+
+### rotate-about-y [x y z theta] ###
+
+Takes point (x, y, z) in 3D space, rotates about the "Y" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (0,1,0) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+
+### rotate-about-x [x y z theta] ###
+
+Takes point (x, y, z) in 3D space, rotates about the "Z" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (0,0,1) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+
+### rotate-about-x [l theta] ###
+### rotate-about-y [l theta] ###
+### rotate-about-z [l theta] ###
+
+These alternate versions of the rotation function accept the three coordinates in a list instead of as individual parameters.
+
+### rotate-about-axis  [px py pz rx ry rz theta] ###
+
+Rotates point (px,py,pz) about the axis extending from the origin to (rx, ry, rz) by **theta** radians. Direction of rotation is clockise about the axis as one looks down it at the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+
+### translate [px py pz tx ty tz] ###
+
+Moves point (px, py, pz) in 3D space by (tx, ty, tz). The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+
+
 
 STRETCH-VIEW - don't call it in animation loop, call it once.
 
