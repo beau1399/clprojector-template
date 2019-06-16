@@ -4,12 +4,33 @@
 
 (def camera-distance 2)
 (def dist camera-distance)
+(def clip-at-z (atom 0))
 
 (def view-height (atom (or (.-clientHeight (.-documentElement js/document)) (.-innerHeight js/window))))
 (def view-width (atom (or (.-clientWidth (.-documentElement js/document)) (.-innerWidth js/window))))
 
 (defn half-width [] (/ @view-width 2))
 (defn half-height [] (/ @view-height 2))
+
+(declare get-canvas)
+
+(defn make-canvas []
+  (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
+                 (js/document.createElement "canvas"))
+  (set! (.-width (get-canvas)) @view-width)
+  (set! (.-height (get-canvas)) @view-height)
+  (get-canvas)  
+)
+
+(defn get-canvas []
+  (let [exists  (first (array-seq (.getElementsByTagName js/document "canvas")))]
+    (or exists (make-canvas))))
+
+(defn make-pairs ([collect] (make-pairs collect []))
+  ([collect product]
+   (let [fragment (take 2 collect) pr (cons fragment product) ]
+    (if (= (count fragment) 0) (rest product)
+        (recur (rest collect) pr)))))
 
 (defn project
   ([px py pz]
@@ -62,3 +83,7 @@
         (.closePath ctx)
         (.fill ctx)        
         (.stroke ctx)))))
+
+(defn clip-list [points]   ; Clip Z dimension
+   ;; Some part of figure is visible
+   (not (reduce #(and %1 %2) (map #(< (nth % 2) @clip-at-z) points))))

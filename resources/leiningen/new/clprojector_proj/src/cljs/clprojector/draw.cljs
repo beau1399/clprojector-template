@@ -2,31 +2,15 @@
                       [{{name}}.util :as clu]
                       [{{name}}.internal :as int]))
 
-(declare get-canvas)
+(def clip-at-z int/clip-at-z)
 
-(def clip-at-z (atom 0))
-
-(defn make-canvas []
-  (.appendChild  (first (array-seq (.getElementsByTagName js/document "div")))
-                 (js/document.createElement "canvas"))
-  (set! (.-width (get-canvas)) @int/view-width)
-  (set! (.-height (get-canvas)) @int/view-height)
-  (get-canvas)  
-)
-
-(defn get-canvas []
-  (let [exists  (first (array-seq (.getElementsByTagName js/document "canvas")))]
-    (or exists (make-canvas))))
+(defn get-canvas [] (int/get-canvas))
 
 (defn get-context [canvas] (.getContext canvas "2d" ))
 
-(defn clip-list [points]   ; Clip Z dimension
-   ;; Some part of figure is visible
-   (not (reduce #(and %1 %2) (map #(< (nth % 2) @clip-at-z) points))))
-
 (defn facet-list [ctx l r g b a]
   (loop [ll l]
-    (if (clip-list ll)
+    (if (int/clip-list ll)
     (apply int/facet           
            (concat (conj (list (take 3 ll)) ctx)
                    (list r g b a))))
@@ -75,27 +59,21 @@
    (let [m (apply rotate-about-z (concat l (list theta)))]
     (list (:x m) (:y m) (:z m)))))
 
-(defn make-pairs ([collect] (make-pairs collect []))
-  ([collect product]
-   (let [fragment (take 2 collect) pr (cons fragment product) ]
-    (if (= (count fragment) 0) (rest product)
-        (recur (rest collect) pr)))))
-
 ;;;Pass-through w/ clipping in Z since this file's funcs. has that
 (defn line [ctx x1 y1 z1 x2 y2 z2 r g b a ]
-  (if (clip-list (list (list x1 y1 z1) (list x2 y2 z2)))
+  (if (int/clip-list (list (list x1 y1 z1) (list x2 y2 z2)))
      (int/line ctx x1 y1 z1 x2 y2 z2 r g b a)))
 
 (defn line-list [ctx r g b a points]
-  (if (clip-list points)
-   (doseq [ elem (make-pairs points)]
+  (if (int/clip-list points)
+   (doseq [ elem (int/make-pairs points)]
     (apply int/line
            (concat (conj (concat (first elem)(second elem)) ctx)
                    (list r g b a))))))
 
 ;;;Auto-clips Z dimension
 (defn poly [ctx r g b a points]
-  (if (clip-list points)
+  (if (int/clip-list points)
     (do
       (set! (.-fillStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
       (set! (.-strokeStyle ctx)  (str "rgba(" r "," g "," b "," a ")"))
