@@ -297,15 +297,3 @@ This alternate versions of the translation function accepts the three coordinate
 ### write-text [ctx x y r g b a size text font] ###
 
 Draws text string **text** onto the plane at the front of the viewable area associated with **ctx**. The top left corner of the text on this plane is defined by **x** and **y**, which are interpreted similarly to how they would be if passed to a 3D function with a "Z" value of 0. (Note, though, that **clip-at-z** does not apply to this function.) The **font** parameter is passed through to the browser as a Web font name. The **size** parameter is similarly passed to the browser as a size in pixels.
-
-## Internals
-
-
-1. **src/cljs/clprojector/core.cljs**
-2. **src/clj/clprojector/handler.clj**
-3. **src/cljs/clprojector/draw.cljs**
-4. **src/cljs/clprojector/internal.cljs**
-5. **src/cljc/clprojector/util.cljc**
-
-
-
