@@ -230,13 +230,41 @@ Here we see the designated **id** value, "img1" and the "display:none" attribute
 
 The functions intended for use by the generated applications reside in file **src/cljs/clprojector/core.cljs**. Many of these have been discussed above. Here is a comprehensive listing of these functions:
 
-### get-context[] ###
+### clip-at-z ###
 
-Returns the context object necessary for all drawing operations. Internally, this ensures the singleton HTML5 "canvas" used for rendering exists.
+This is a scalar value (Clojure **atom**) that defines how close objects can get to the camera before they are clipped, i.e. not rendered. By default this is 0, but in some applications it may be desirable to increase the value so that very close-in objects do not disrupt scene construction.
 
 ### cls [r g b] ###
 
 Paints the entire drawing area with the opaque 24-bit color defined by its parameters.
+
+###  draw-image [ctx x y id] ###
+
+Draws a 2D image onto the plane at the front of the viewable area associated with **ctx**. The top left corner of the image on this plane is defined by **x** and **y**, which are interpreted similarly to how they would be if passed to a 3D function with a "Z" value of 0. (Note, though, that **clip-at-z** does not apply to this function.) The image appearance is defined by **id**, which should be the "id" attribute of an HTML "img" present but hidden in the initial page rendering. Generally this image will be set up using Reitit syntax in file **src/clj/clprojector/handler.clj**.
+
+### facet-list [ctx l r g b a] ###
+
+Accepts a list of points **l** (a list of 3D coordinate triplets), a drawing context **ctx**, and, in its final four parameters, a color / opacity value. Renders a solid facet to the display. The factes should be specified in counter-clockwise order for proper surface culling.
+
+### get-context[] ###
+
+Returns the context object necessary for all drawing operations. Internally, this ensures the singleton HTML5 "canvas" used for rendering exists.
+
+### line [ctx x1 y1 z1 x2 y2 z2 r g b a ] ###
+
+Draws a line segment onto **ctx**. This extends from (x1, y1, z1) to (x2, y2, z2). The color / opacity of the line is defined by parameters **r**, **g**, **b**, and **a**.
+
+### line-list [ctx r g b a points] ###
+
+Draws a series of connected line segments (e.g. a wireframe solid) to context **ctx**. Parameter **points** should contain a list of 3D coordinate triplets defining the line list. A line is drawn from the first coordinate to the second, from the second coordinate to the third, and so on. The color / opacity of the lines is defined by parameters **r**, **g**, **b**, and **a**.
+
+### poly [ctx r g b a points] ###
+
+Draws a polygon (_not_ a polyhedron) with an arbitrary number of vertices to context **ctx**. Surface culling is not performed. Parameter **points** should contain a list of 3D coordinate triplets defining the vertices. In general, this list should be self-closing, i.e. should start and end at the same point. The color / opacity of the rendering is defined by parameters **r**, **g**, **b**, and **a**.
+
+### rotate-about-axis  [px py pz rx ry rz theta] ###
+
+Rotates point (px,py,pz) about the axis extending from the origin to (rx, ry, rz) by **theta** radians. Direction of rotation is clockise about the axis as one looks down it at the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
 
 ### rotate-about-x [x y z theta] ###
 
@@ -250,25 +278,25 @@ Takes point (x, y, z) in 3D space, rotates about the "Y" axis it by **theta** ra
 
 Takes point (x, y, z) in 3D space, rotates about the "Z" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (0,0,1) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
 
-### rotate-about-x [l theta] ###
-### rotate-about-y [l theta] ###
-### rotate-about-z [l theta] ###
+### rotate-about-x [l theta] / rotate-about-y [l theta] / rotate-about-z [l theta] ###
 
 These alternate versions of the rotation function accept the three coordinates in a list instead of as individual parameters.
 
-### rotate-about-axis  [px py pz rx ry rz theta] ###
+###  stretch-view [] ###
 
-Rotates point (px,py,pz) about the axis extending from the origin to (rx, ry, rz) by **theta** radians. Direction of rotation is clockise about the axis as one looks down it at the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
+After calling this function, coordinates (0, 0, 0) and (1, 1, 0) are redefined such that they lie at the extreme corners of the viewable area, regardless of device aspect ratio. This call should be made once, outside of any animation loop, and prior to calling **get-context**.
 
 ### translate [px py pz tx ty tz] ###
 
 Moves point (px, py, pz) in 3D space by (tx, ty, tz). The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
 
+### translate [l tx ty tz] ###
 
+This alternate versions of the translation function accepts the three coordinates in a list instead of as individual parameters.
 
-STRETCH-VIEW - don't call it in animation loop, call it once.
+### write-text [ctx x y r g b a size text font] ###
 
-
+Draws text string **text** onto the plane at the front of the viewable area associated with **ctx**. The top left corner of the text on this plane is defined by **x** and **y**, which are interpreted similarly to how they would be if passed to a 3D function with a "Z" value of 0. (Note, though, that **clip-at-z** does not apply to this function.) The **font** parameter is passed through to the browser as a Web font name. The **size** parameter is similarly passed to the browser as a size in pixels.
 
 ## Internals
 
