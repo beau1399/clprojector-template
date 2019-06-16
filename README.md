@@ -274,7 +274,7 @@ Takes point (x, y, z) in 3D space, rotates about the "X" axis it by **theta** ra
 
 Takes point (x, y, z) in 3D space, rotates about the "Y" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (0,1,0) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
 
-### rotate-about-x [x y z theta] ###
+### rotate-about-z [x y z theta] ###
 
 Takes point (x, y, z) in 3D space, rotates about the "Z" axis it by **theta** radians, and returns it. The direction of rotation is clockwise about the axis extending from (0,0,1) to the origin. The return format is a map with keys **:x**, **:y**, and **:z** holding the post-rotation coordinates.
 
